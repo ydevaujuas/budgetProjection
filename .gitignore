@@ -1,0 +1,16 @@
+# Environment variables
+.env
+**/.env
+.env.local
+.env*.local
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
