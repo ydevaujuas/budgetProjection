@@ -1,5 +1,7 @@
 # 📊 Budget Projection Familiale
 
+> **Projet bac à sable** — Ce projet est utilisé comme terrain d'expérimentation pour tester le développement assisté par IA (Claude) et les pratiques CI/CD. Le code et les fonctionnalités évoluent au fil des expérimentations.
+
 Simulation interactive des dépenses familiales sur 10 ans (2026–2036).
 
 Conçu pour anticiper l'impact financier d'un projet d'achat immobilier combiné à une croissance de la famille — en tenant compte des aides CAF, des coûts de garde évolutifs selon l'âge des enfants, et des charges fixes du foyer.
