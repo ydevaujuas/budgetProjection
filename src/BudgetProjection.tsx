@@ -362,10 +362,6 @@ export default function BudgetProjection() {
                     value={crechePrice} setValue={setCrechePrice} min={400} max={1800} step={50} unit=" €"
                     color={SECTION_COLORS.garde} hint="Coût brut avant aides CAF (CMG déduit séparément)"
                   />
-                  <SliderControl label="Alimentation foyer (base couple)"
-                    value={baseAlim} setValue={setBaseAlim} min={300} max={900} step={50} unit=" €"
-                    color={SECTION_COLORS.alim} hint="Hors supplément lié à l'âge des enfants"
-                  />
                 </div>
 
                 {/* Aides CAF — année en cours */}
@@ -457,6 +453,10 @@ export default function BudgetProjection() {
                 <SectionTitle icon="🎯" label="Vie courante" />
                 <SliderControl label="Loisirs, sorties, vacances"
                   value={loisirs} setValue={setLoisirs} min={0} max={600} step={50} unit=" €" color={SECTION_COLORS.loisirs}
+                />
+                <SliderControl label="Alimentation foyer (base couple)"
+                  value={baseAlim} setValue={setBaseAlim} min={300} max={900} step={50} unit=" €"
+                  color={SECTION_COLORS.alim} hint="Hors supplément lié à l'âge des enfants"
                 />
                 <SliderControl label="Assurances (auto, habitation, mutuelle)"
                   value={assurance} setValue={setAssurance} min={50} max={500} step={25} unit=" €" color={SECTION_COLORS.assurance}
