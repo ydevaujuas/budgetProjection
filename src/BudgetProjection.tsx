@@ -436,38 +436,52 @@ export default function BudgetProjection() {
             {/* TAB: Charges */}
             {activeTab === "charges" && (
               <>
-                <SectionTitle icon="🚗" label="Transport" />
-                <SliderControl label="Voiture(s) — leasing, carburant, entretien"
-                  value={voiture} setValue={setVoiture} min={0} max={1000} step={50} unit=" €" color={SECTION_COLORS.voiture}
-                />
-                <SectionTitle icon="⚡" label="Logement & énergie" />
-                <SliderControl label="Énergie — EDF & gaz"
-                  value={energie} setValue={setEnergie} min={50} max={400} step={5} unit=" €"
-                  color={SECTION_COLORS.energie} hint="Hors mensualité prêt"
-                />
-                <SliderControl label="Téléphonie & internet"
-                  value={telecom} setValue={setTelecom} min={10} max={150} step={1} unit=" €"
-                  color={SECTION_COLORS.telecom}
-                />
-                <SectionTitle icon="🎯" label="Vie courante" />
-                <SliderControl label="Loisirs, sorties, vacances"
-                  value={loisirs} setValue={setLoisirs} min={0} max={600} step={50} unit=" €" color={SECTION_COLORS.loisirs}
-                />
-                <SliderControl label="Alimentation foyer (base couple)"
-                  value={baseAlim} setValue={setBaseAlim} min={300} max={900} step={50} unit=" €"
-                  color={SECTION_COLORS.alim} hint="Hors supplément lié à l'âge des enfants"
-                />
-                <SliderControl label="Assurances (auto, habitation, mutuelle)"
-                  value={assurance} setValue={setAssurance} min={50} max={500} step={25} unit=" €" color={SECTION_COLORS.assurance}
-                />
-                <SectionTitle icon="🍼" label="Coûts de garde (brut)" />
-                <SliderControl label="Coût crèche / ass. mat. brut"
-                  value={crechePrice} setValue={setCrechePrice} min={400} max={1800} step={50} unit=" €"
-                  color={SECTION_COLORS.garde} hint="Coût brut avant aides CAF (CMG déduit séparément)"
-                />
-                <div style={{ marginTop: 8, padding: "10px 12px", background: "#f8fafc", borderRadius: 8, display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#475569" }}>
-                  <span>Total charges fixes</span>
-                  <span style={{ color: "#1e293b" }}>{fixedCharges.toLocaleString("fr-FR")} €/mois</span>
+                {/* Fixed charges group */}
+                <div style={{ marginBottom: 4, padding: "6px 10px 0", background: "#f8fafc", borderRadius: 10, border: "1px solid #e2e8f0" }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#1e293b", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Charges fixes</div>
+                  <SectionTitle icon="⚡" label="Logement & énergie" />
+                  <SliderControl label="Énergie — EDF & gaz"
+                    value={energie} setValue={setEnergie} min={50} max={400} step={5} unit=" €"
+                    color={SECTION_COLORS.energie} hint="Hors mensualité prêt"
+                  />
+                  <SliderControl label="Téléphonie & internet"
+                    value={telecom} setValue={setTelecom} min={10} max={150} step={1} unit=" €"
+                    color={SECTION_COLORS.telecom}
+                  />
+                  <SectionTitle icon="🔒" label="Assurances" />
+                  <SliderControl label="Assurances (auto, habitation, mutuelle)"
+                    value={assurance} setValue={setAssurance} min={50} max={500} step={25} unit=" €" color={SECTION_COLORS.assurance}
+                  />
+                  <SectionTitle icon="🍼" label="Coûts de garde (brut)" />
+                  <SliderControl label="Coût crèche / ass. mat. brut"
+                    value={crechePrice} setValue={setCrechePrice} min={400} max={1800} step={50} unit=" €"
+                    color={SECTION_COLORS.garde} hint="Coût brut avant aides CAF (CMG déduit séparément)"
+                  />
+                  <div style={{ margin: "8px -10px 0", padding: "10px 12px", background: "#dbeafe", borderRadius: "0 0 10px 10px", display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#1d4ed8" }}>
+                    <span>Total charges fixes</span>
+                    <span>{(energie + telecom + assurance + crechePrice).toLocaleString("fr-FR")} €/mois</span>
+                  </div>
+                </div>
+
+                {/* Variable charges group */}
+                <div style={{ marginTop: 12, padding: "6px 10px 0", background: "#f8fafc", borderRadius: 10, border: "1px solid #e2e8f0" }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#1e293b", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Charges variables</div>
+                  <SectionTitle icon="🚗" label="Transport" />
+                  <SliderControl label="Voiture(s) — leasing, carburant, entretien"
+                    value={voiture} setValue={setVoiture} min={0} max={1000} step={50} unit=" €" color={SECTION_COLORS.voiture}
+                  />
+                  <SectionTitle icon="🎯" label="Vie courante" />
+                  <SliderControl label="Loisirs, sorties, vacances"
+                    value={loisirs} setValue={setLoisirs} min={0} max={600} step={50} unit=" €" color={SECTION_COLORS.loisirs}
+                  />
+                  <SliderControl label="Alimentation foyer (base couple)"
+                    value={baseAlim} setValue={setBaseAlim} min={300} max={900} step={50} unit=" €"
+                    color={SECTION_COLORS.alim} hint="Hors supplément lié à l'âge des enfants"
+                  />
+                  <div style={{ margin: "8px -10px 0", padding: "10px 12px", background: "#ffedd5", borderRadius: "0 0 10px 10px", display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#c2410c" }}>
+                    <span>Total charges variables</span>
+                    <span>{(voiture + loisirs + baseAlim).toLocaleString("fr-FR")} €/mois</span>
+                  </div>
                 </div>
               </>
             )}
