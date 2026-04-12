@@ -53,6 +53,7 @@ const SECTION_COLORS = {
   alim:     "#3b82f6",
   voiture:  "#8b5cf6",
   energie:  "#06b6d4",
+  telecom:  "#0ea5e9",
   loisirs:  "#ec4899",
   assurance:"#64748b",
   aides:    "#22c55e",
@@ -142,7 +143,8 @@ export default function BudgetProjection() {
   const [crechePrice, setCrechePrice] = useState(1200);
   const [baseAlim, setBaseAlim] = useState(500);
   const [voiture, setVoiture] = useState(400);
-  const [energie, setEnergie] = useState(181);
+  const [energie, setEnergie] = useState(147);
+  const [telecom, setTelecom] = useState(34);
   const [loisirs, setLoisirs] = useState(200);
   const [assurance, setAssurance] = useState(65);
   const [activeTab, setActiveTab] = useState("famille");
@@ -152,7 +154,7 @@ export default function BudgetProjection() {
 
   const revenuNet = useMemo(() => estimateNetAfterTax(revenuFoyer), [revenuFoyer]);
   const revAnnuel = revenuFoyer * 12;
-  const fixedCharges = voiture + energie + loisirs + assurance;
+  const fixedCharges = voiture + energie + telecom + loisirs + assurance;
 
   const mensualite = useMemo(() => {
     const r = tauxPret / 100 / 12;
@@ -194,7 +196,7 @@ export default function BudgetProjection() {
         year: String(year),
         garde: Math.round(garde),
         alim: Math.round(baseAlim + alimExtra),
-        voiture, energie, loisirs, assurance,
+        voiture, energie, telecom, loisirs, assurance,
         totalAides: aides.total,
         cmg: aides.cmg,
         allocFam: aides.allocFam,
@@ -202,7 +204,7 @@ export default function BudgetProjection() {
         nbMoins3, nbMoins6,
       };
     });
-  }, [nbChildren, gap2, gap3, crechePrice, baseAlim, voiture, energie, loisirs, assurance, child2Birth, child3Birth, revAnnuel]);
+  }, [nbChildren, gap2, gap3, crechePrice, baseAlim, voiture, energie, telecom, loisirs, assurance, child2Birth, child3Birth, revAnnuel]);
 
   const currentYearData = data[0];
   const peakData = [...data].sort((a, b) => (b.garde + b.alim) - (a.garde + a.alim))[0];
@@ -292,7 +294,8 @@ export default function BudgetProjection() {
                 { label: "Garde d'enfants", val: peakData.garde, sign: "−", color: SECTION_COLORS.garde },
                 { label: "Alimentation", val: peakData.alim, sign: "−", color: SECTION_COLORS.alim },
                 { label: "Voiture(s)", val: voiture, sign: "−", color: SECTION_COLORS.voiture },
-                { label: "Énergie & charges", val: energie, sign: "−", color: SECTION_COLORS.energie },
+                { label: "Énergie (EDF + Engie)", val: energie, sign: "−", color: SECTION_COLORS.energie },
+                { label: "Téléphonie & internet", val: telecom, sign: "−", color: SECTION_COLORS.telecom },
                 { label: "Loisirs & vacances", val: loisirs, sign: "−", color: SECTION_COLORS.loisirs },
                 { label: "Assurances", val: assurance, sign: "−", color: SECTION_COLORS.assurance },
                 { label: "Aides CAF estimées", val: peakData.totalAides, sign: "+", color: "#22c55e" },
@@ -438,9 +441,13 @@ export default function BudgetProjection() {
                   value={voiture} setValue={setVoiture} min={0} max={1000} step={50} unit=" €" color={SECTION_COLORS.voiture}
                 />
                 <SectionTitle icon="⚡" label="Logement & énergie" />
-                <SliderControl label="Énergie, eau, internet, téléphone"
-                  value={energie} setValue={setEnergie} min={100} max={500} step={20} unit=" €"
+                <SliderControl label="Énergie — EDF & gaz"
+                  value={energie} setValue={setEnergie} min={50} max={400} step={5} unit=" €"
                   color={SECTION_COLORS.energie} hint="Hors mensualité prêt"
+                />
+                <SliderControl label="Téléphonie & internet"
+                  value={telecom} setValue={setTelecom} min={10} max={150} step={1} unit=" €"
+                  color={SECTION_COLORS.telecom}
                 />
                 <SectionTitle icon="🎯" label="Vie courante" />
                 <SliderControl label="Loisirs, sorties, vacances"
