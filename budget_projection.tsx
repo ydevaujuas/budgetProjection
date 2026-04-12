@@ -136,11 +136,11 @@ export default function BudgetProjection() {
   const [gap2, setGap2] = useState(3);
   const [gap3, setGap3] = useState(3);
   const [revenuFoyer, setRevenuFoyer] = useState(5200);
-  const [montantPret, setMontantPret] = useState(320000);
-  const [dureePret, setDureePret] = useState(20);
+  const [montantPret, setMontantPret] = useState(300000);
+  const [dureePret, setDureePret] = useState(25);
   const [tauxPret, setTauxPret] = useState(3.5);
   const [achatAnnee, setAchatAnnee] = useState(2028);
-  const [crechePrice, setCrechePrice] = useState(1200);
+  const [crechePrice, setCrechePrice] = useState(750);
   const [baseAlim, setBaseAlim] = useState(500);
   const [voiture, setVoiture] = useState(400);
   const [energie, setEnergie] = useState(147);
