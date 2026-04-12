@@ -147,6 +147,7 @@ export default function BudgetProjection() {
   const [telecom, setTelecom] = useState(34);
   const [loisirs, setLoisirs] = useState(200);
   const [assurance, setAssurance] = useState(89);
+  const [autresCharges, setAutresCharges] = useState(0);
   const [activeTab, setActiveTab] = useState("famille");
 
   const child2Birth = CHILD1_BIRTH + gap2;
@@ -154,7 +155,7 @@ export default function BudgetProjection() {
 
   const revenuNet = useMemo(() => estimateNetAfterTax(revenuFoyer), [revenuFoyer]);
   const revAnnuel = revenuFoyer * 12;
-  const fixedCharges = voiture + energie + telecom + loisirs + assurance;
+  const fixedCharges = voiture + energie + telecom + loisirs + assurance + autresCharges;
 
   const mensualite = useMemo(() => {
     const r = tauxPret / 100 / 12;
@@ -213,6 +214,9 @@ export default function BudgetProjection() {
   const margeAuPic = revenuNet - peakGrandTotal;
   const margeApresAides = margeAuPic + peakData.totalAides;
   const tauxEndettement = Math.round((mensualite / revenuNet) * 100);
+  const pctBudget = Math.min(100, Math.round(peakGrandTotal / revenuNet * 100));
+  const pctFixes = Math.min(100, Math.round((mensualite + peakData.garde + energie + telecom + assurance) / revenuNet * 100));
+  const pctVariables = Math.min(100 - pctFixes, Math.round((peakData.alim + voiture + loisirs + autresCharges) / revenuNet * 100));
 
   const tabs = [
     { id: "famille", label: "👨‍👩‍👧 Famille" },
@@ -284,42 +288,110 @@ export default function BudgetProjection() {
 
           {/* Synthèse */}
           <div style={{ background: "#fff", borderRadius: 16, padding: "20px", boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#475569", marginBottom: 14 }}>
-              Synthèse budgétaire au pic · {peakData.year}
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              {[
-                { label: "Revenu net foyer", val: revenuNet, sign: "+", color: "#22c55e" },
-                { label: `Mensualité prêt (${achatAnnee}+)`, val: mensualite, sign: "−", color: "#8b5cf6" },
-                { label: "Garde d'enfants", val: peakData.garde, sign: "−", color: SECTION_COLORS.garde },
-                { label: "Alimentation", val: peakData.alim, sign: "−", color: SECTION_COLORS.alim },
-                { label: "Voiture(s)", val: voiture, sign: "−", color: SECTION_COLORS.voiture },
-                { label: "Énergie (EDF + Engie)", val: energie, sign: "−", color: SECTION_COLORS.energie },
-                { label: "Téléphonie & internet", val: telecom, sign: "−", color: SECTION_COLORS.telecom },
-                { label: "Loisirs & vacances", val: loisirs, sign: "−", color: SECTION_COLORS.loisirs },
-                { label: "Assurances", val: assurance, sign: "−", color: SECTION_COLORS.assurance },
-                { label: "Aides CAF estimées", val: peakData.totalAides, sign: "+", color: "#22c55e" },
-              ].map((row, i) => (
-                <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 10px", borderRadius: 8, background: row.sign === "+" ? "#f0fdf4" : "#f8fafc" }}>
-                  <span style={{ fontSize: 12, color: "#475569" }}>{row.label}</span>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: row.color }}>{row.sign} {row.val.toLocaleString("fr-FR")} €</span>
-                </div>
-              ))}
+
+            {/* Header */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+              <div>
+                <div style={{ fontSize: 10, color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em" }}>Synthèse budgétaire au pic</div>
+                <div style={{ fontSize: 24, fontWeight: 800, color: "#0f172a", marginTop: 2 }}>{peakData.year}</div>
+              </div>
+              <div style={{ textAlign: "right", background: "#f0fdf4", borderRadius: 10, padding: "8px 14px", border: "1px solid #bbf7d0" }}>
+                <div style={{ fontSize: 10, color: "#16a34a", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.05em" }}>Revenu net foyer</div>
+                <div style={{ fontSize: 20, fontWeight: 800, color: "#22c55e" }}>+{revenuNet.toLocaleString("fr-FR")} €</div>
+              </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 8 }}>
-              <div style={{ padding: "10px 12px", borderRadius: 10, background: margeAuPic < 0 ? "#fef2f2" : "#f8fafc", border: `1px solid ${margeAuPic < 0 ? "#fecaca" : "#e2e8f0"}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div style={{ fontSize: 11, color: "#94a3b8" }}>Sans aides</div>
-                <div style={{ fontWeight: 700, fontSize: 16, color: margeAuPic < 600 ? "#ef4444" : margeAuPic < 1000 ? "#f59e0b" : "#475569" }}>{margeAuPic.toLocaleString("fr-FR")} €</div>
-              </div>
-              <div style={{ padding: "10px 12px", borderRadius: 10, background: margeApresAides < 600 ? "#fef2f2" : margeApresAides < 1000 ? "#fffbeb" : "#f0fdf4", border: `1px solid ${margeApresAides < 600 ? "#fecaca" : margeApresAides < 1000 ? "#fde68a" : "#bbf7d0"}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: 12 }}>Reste à vivre après aides</div>
-                  <div style={{ fontSize: 10, color: "#64748b", marginTop: 1 }}>
-                    {margeApresAides < 600 ? "⚠️ Marge critique" : margeApresAides < 1000 ? "🟡 Passable" : "✅ Bonne marge"}
+            {/* Budget utilization bar */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                <div style={{ display: "flex", gap: 12 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "#64748b" }}>
+                    <div style={{ width: 9, height: 9, borderRadius: 2, background: "#3b82f6" }} />Fixes ({pctFixes}%)
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "#64748b" }}>
+                    <div style={{ width: 9, height: 9, borderRadius: 2, background: "#f97316" }} />Variables ({pctVariables}%)
                   </div>
                 </div>
-                <div style={{ fontWeight: 800, fontSize: 20, color: margeApresAides < 600 ? "#ef4444" : margeApresAides < 1000 ? "#f59e0b" : "#22c55e" }}>{margeApresAides.toLocaleString("fr-FR")} €</div>
+                <span style={{ fontSize: 11, fontWeight: 700, color: pctBudget > 95 ? "#ef4444" : pctBudget > 80 ? "#f59e0b" : "#475569" }}>{pctBudget}% du budget utilisé</span>
+              </div>
+              <div style={{ height: 10, borderRadius: 5, background: "#f1f5f9", overflow: "hidden", display: "flex" }}>
+                <div style={{ width: `${pctFixes}%`, background: "linear-gradient(90deg, #2563eb, #3b82f6)", transition: "width 0.3s" }} />
+                <div style={{ width: `${pctVariables}%`, background: "linear-gradient(90deg, #ea580c, #f97316)", transition: "width 0.3s" }} />
+              </div>
+            </div>
+
+            {/* Two columns: charges fixes | charges variables */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
+
+              {/* Charges fixes */}
+              <div style={{ background: "#eff6ff", borderRadius: 12, padding: "12px", border: "1px solid #bfdbfe" }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Charges fixes</div>
+                {[
+                  { label: `Prêt (${achatAnnee}+)`, val: mensualite, color: "#8b5cf6" },
+                  { label: "Garde", val: peakData.garde, color: SECTION_COLORS.garde },
+                  { label: "Énergie", val: energie, color: SECTION_COLORS.energie },
+                  { label: "Téléphonie", val: telecom, color: SECTION_COLORS.telecom },
+                  { label: "Assurances", val: assurance, color: SECTION_COLORS.assurance },
+                ].map((row, i) => (
+                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, marginBottom: 6 }}>
+                    <span style={{ color: "#64748b", display: "flex", alignItems: "center", gap: 5 }}>
+                      <span style={{ width: 7, height: 7, borderRadius: "50%", background: row.color, display: "inline-block", flexShrink: 0 }} />
+                      {row.label}
+                    </span>
+                    <span style={{ fontWeight: 600, color: "#1e293b", whiteSpace: "nowrap" }}>−{row.val.toLocaleString("fr-FR")} €</span>
+                  </div>
+                ))}
+                <div style={{ borderTop: "1px solid #bfdbfe", marginTop: 6, paddingTop: 7, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: "#1d4ed8", textTransform: "uppercase" }}>Sous-total</span>
+                  <span style={{ fontSize: 12, fontWeight: 800, color: "#1d4ed8" }}>−{(mensualite + peakData.garde + energie + telecom + assurance).toLocaleString("fr-FR")} €</span>
+                </div>
+              </div>
+
+              {/* Charges variables */}
+              <div style={{ background: "#fff7ed", borderRadius: 12, padding: "12px", border: "1px solid #fed7aa" }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#c2410c", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Charges variables</div>
+                {[
+                  { label: "Alimentation", val: peakData.alim, color: SECTION_COLORS.alim },
+                  { label: "Voiture(s)", val: voiture, color: SECTION_COLORS.voiture },
+                  { label: "Loisirs", val: loisirs, color: SECTION_COLORS.loisirs },
+                  { label: "Autres", val: autresCharges, color: "#6b7280" },
+                ].map((row, i) => (
+                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, marginBottom: 6 }}>
+                    <span style={{ color: "#64748b", display: "flex", alignItems: "center", gap: 5 }}>
+                      <span style={{ width: 7, height: 7, borderRadius: "50%", background: row.color, display: "inline-block", flexShrink: 0 }} />
+                      {row.label}
+                    </span>
+                    <span style={{ fontWeight: 600, color: "#1e293b", whiteSpace: "nowrap" }}>−{row.val.toLocaleString("fr-FR")} €</span>
+                  </div>
+                ))}
+                <div style={{ borderTop: "1px solid #fed7aa", marginTop: 6, paddingTop: 7, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: "#c2410c", textTransform: "uppercase" }}>Sous-total</span>
+                  <span style={{ fontSize: 12, fontWeight: 800, color: "#c2410c" }}>−{(peakData.alim + voiture + loisirs + autresCharges).toLocaleString("fr-FR")} €</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Bilan */}
+            <div style={{ background: "#f8fafc", borderRadius: 12, padding: "12px 14px", border: "1px solid #e2e8f0" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, paddingBottom: 10, borderBottom: "1px solid #e2e8f0" }}>
+                <div>
+                  <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 2 }}>Marge brute (sans aides)</div>
+                  <div style={{ fontWeight: 700, fontSize: 16, color: margeAuPic < 0 ? "#ef4444" : "#475569" }}>{margeAuPic.toLocaleString("fr-FR")} €</div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 2 }}>Aides CAF estimées</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "#22c55e" }}>+{peakData.totalAides.toLocaleString("fr-FR")} €</div>
+                </div>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px", borderRadius: 10, background: margeApresAides < 600 ? "#fef2f2" : margeApresAides < 1000 ? "#fffbeb" : "#f0fdf4", border: `1px solid ${margeApresAides < 600 ? "#fecaca" : margeApresAides < 1000 ? "#fde68a" : "#bbf7d0"}` }}>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "#1e293b" }}>Reste à vivre</div>
+                  <div style={{ fontSize: 10, color: "#64748b", marginTop: 1 }}>après toutes charges + aides</div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: 26, fontWeight: 800, color: margeApresAides < 600 ? "#ef4444" : margeApresAides < 1000 ? "#f59e0b" : "#22c55e" }}>{margeApresAides.toLocaleString("fr-FR")} €</div>
+                  <div style={{ fontSize: 11, color: margeApresAides < 600 ? "#ef4444" : margeApresAides < 1000 ? "#f59e0b" : "#22c55e" }}>{margeApresAides < 600 ? "⚠️ Marge critique" : margeApresAides < 1000 ? "🟡 Passable" : "✅ Bonne marge"}</div>
+                </div>
               </div>
             </div>
           </div>
@@ -478,10 +550,22 @@ export default function BudgetProjection() {
                     value={baseAlim} setValue={setBaseAlim} min={300} max={900} step={50} unit=" €"
                     color={SECTION_COLORS.alim} hint="Hors supplément lié à l'âge des enfants"
                   />
+                  <SliderControl label="Autres charges"
+                    value={autresCharges} setValue={setAutresCharges} min={0} max={1000} step={50} unit=" €"
+                    color="#6b7280" hint="Charges non catégorisées"
+                  />
                   <div style={{ margin: "8px -10px 0", padding: "10px 12px", background: "#ffedd5", borderRadius: "0 0 10px 10px", display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#c2410c" }}>
                     <span>Total charges variables</span>
-                    <span>{(voiture + loisirs + baseAlim).toLocaleString("fr-FR")} €/mois</span>
+                    <span>{(voiture + loisirs + baseAlim + autresCharges).toLocaleString("fr-FR")} €/mois</span>
                   </div>
+                </div>
+
+                {/* Global total */}
+                <div style={{ marginTop: 12, padding: "11px 14px", background: "#1e293b", borderRadius: 10, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.06em" }}>Total global charges</span>
+                  <span style={{ fontSize: 15, fontWeight: 800, color: "#f8fafc" }}>
+                    {(energie + telecom + assurance + crechePrice + voiture + loisirs + baseAlim + autresCharges).toLocaleString("fr-FR")} €/mois
+                  </span>
                 </div>
               </>
             )}
