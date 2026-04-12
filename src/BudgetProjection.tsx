@@ -456,9 +456,14 @@ export default function BudgetProjection() {
                   <SliderControl label="Assurances (auto, habitation, mutuelle)"
                     value={assurance} setValue={setAssurance} min={50} max={500} step={25} unit=" €" color={SECTION_COLORS.assurance}
                   />
+                  <SectionTitle icon="🍼" label="Coûts de garde (brut)" />
+                  <SliderControl label="Coût crèche / ass. mat. brut"
+                    value={crechePrice} setValue={setCrechePrice} min={400} max={1800} step={50} unit=" €"
+                    color={SECTION_COLORS.garde} hint="Coût brut avant aides CAF (CMG déduit séparément)"
+                  />
                   <div style={{ margin: "8px -10px 0", padding: "10px 12px", background: "#dbeafe", borderRadius: "0 0 10px 10px", display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#1d4ed8" }}>
                     <span>Total charges fixes</span>
-                    <span>{(voiture + energie + telecom + assurance).toLocaleString("fr-FR")} €/mois</span>
+                    <span>{(voiture + energie + telecom + assurance + crechePrice).toLocaleString("fr-FR")} €/mois</span>
                   </div>
                 </div>
 
@@ -473,14 +478,9 @@ export default function BudgetProjection() {
                     value={baseAlim} setValue={setBaseAlim} min={300} max={900} step={50} unit=" €"
                     color={SECTION_COLORS.alim} hint="Hors supplément lié à l'âge des enfants"
                   />
-                  <SectionTitle icon="🍼" label="Coûts de garde (brut)" />
-                  <SliderControl label="Coût crèche / ass. mat. brut"
-                    value={crechePrice} setValue={setCrechePrice} min={400} max={1800} step={50} unit=" €"
-                    color={SECTION_COLORS.garde} hint="Coût brut avant aides CAF (CMG déduit séparément)"
-                  />
                   <div style={{ margin: "8px -10px 0", padding: "10px 12px", background: "#ffedd5", borderRadius: "0 0 10px 10px", display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#c2410c" }}>
                     <span>Total charges variables</span>
-                    <span>{(loisirs + baseAlim + crechePrice).toLocaleString("fr-FR")} €/mois</span>
+                    <span>{(loisirs + baseAlim).toLocaleString("fr-FR")} €/mois</span>
                   </div>
                 </div>
               </>
