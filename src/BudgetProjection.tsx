@@ -356,14 +356,6 @@ export default function BudgetProjection() {
                     hint={`Naissance prévue ≈ ${Math.round(CHILD1_BIRTH + gap2 + gap3)}`}
                   />
                 )}
-                <div style={{ marginTop: 8 }}>
-                  <SectionTitle icon="🍼" label="Coûts de garde (brut)" />
-                  <SliderControl label="Coût crèche / ass. mat. brut"
-                    value={crechePrice} setValue={setCrechePrice} min={400} max={1800} step={50} unit=" €"
-                    color={SECTION_COLORS.garde} hint="Coût brut avant aides CAF (CMG déduit séparément)"
-                  />
-                </div>
-
                 {/* Aides CAF — année en cours */}
                 <div style={{ marginTop: 16 }}>
                   <SectionTitle icon="🏦" label="Aides CAF estimées — 2026" />
@@ -460,6 +452,11 @@ export default function BudgetProjection() {
                 />
                 <SliderControl label="Assurances (auto, habitation, mutuelle)"
                   value={assurance} setValue={setAssurance} min={50} max={500} step={25} unit=" €" color={SECTION_COLORS.assurance}
+                />
+                <SectionTitle icon="🍼" label="Coûts de garde (brut)" />
+                <SliderControl label="Coût crèche / ass. mat. brut"
+                  value={crechePrice} setValue={setCrechePrice} min={400} max={1800} step={50} unit=" €"
+                  color={SECTION_COLORS.garde} hint="Coût brut avant aides CAF (CMG déduit séparément)"
                 />
                 <div style={{ marginTop: 8, padding: "10px 12px", background: "#f8fafc", borderRadius: 8, display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#475569" }}>
                   <span>Total charges fixes</span>
