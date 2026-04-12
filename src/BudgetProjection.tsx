@@ -146,7 +146,7 @@ export default function BudgetProjection() {
   const [energie, setEnergie] = useState(147);
   const [telecom, setTelecom] = useState(34);
   const [loisirs, setLoisirs] = useState(200);
-  const [assurance, setAssurance] = useState(65);
+  const [assurance, setAssurance] = useState(89);
   const [activeTab, setActiveTab] = useState("famille");
 
   const child2Birth = CHILD1_BIRTH + gap2;
