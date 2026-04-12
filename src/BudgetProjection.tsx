@@ -142,12 +142,13 @@ export default function BudgetProjection() {
   const [achatAnnee, setAchatAnnee] = useState(2028);
   const [crechePrice, setCrechePrice] = useState(750);
   const [baseAlim, setBaseAlim] = useState(500);
-  const [voiture, setVoiture] = useState(400);
+  const [voiture, setVoiture] = useState(100);
   const [energie, setEnergie] = useState(147);
   const [telecom, setTelecom] = useState(34);
   const [loisirs, setLoisirs] = useState(200);
   const [assurance, setAssurance] = useState(89);
   const [autresCharges, setAutresCharges] = useState(0);
+  const [includeAides, setIncludeAides] = useState(true);
   const [activeTab, setActiveTab] = useState("famille");
 
   const child2Birth = CHILD1_BIRTH + gap2;
@@ -212,7 +213,7 @@ export default function BudgetProjection() {
   const peakVarTotal = peakData.garde + peakData.alim;
   const peakGrandTotal = peakVarTotal + fixedCharges + mensualite;
   const margeAuPic = revenuNet - peakGrandTotal;
-  const margeApresAides = margeAuPic + peakData.totalAides;
+  const margeApresAides = margeAuPic + (includeAides ? peakData.totalAides : 0);
   const tauxEndettement = Math.round((mensualite / revenuNet) * 100);
   const pctBudget = Math.min(100, Math.round(peakGrandTotal / revenuNet * 100));
   const pctFixes = Math.min(100, Math.round((mensualite + peakData.garde + energie + telecom + assurance) / revenuNet * 100));
@@ -294,6 +295,15 @@ export default function BudgetProjection() {
               <div>
                 <div style={{ fontSize: 10, color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em" }}>Synthèse budgétaire au pic</div>
                 <div style={{ fontSize: 24, fontWeight: 800, color: "#0f172a", marginTop: 2 }}>{peakData.year}</div>
+                <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 11, color: "#64748b", userSelect: "none", marginTop: 6 }}>
+                  <input
+                    type="checkbox"
+                    checked={includeAides}
+                    onChange={e => setIncludeAides(e.target.checked)}
+                    style={{ width: 13, height: 13, accentColor: "#22c55e", cursor: "pointer" }}
+                  />
+                  Inclure aides CAF
+                </label>
               </div>
               <div style={{ textAlign: "right", background: "#f0fdf4", borderRadius: 10, padding: "8px 14px", border: "1px solid #bbf7d0" }}>
                 <div style={{ fontSize: 10, color: "#16a34a", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.05em" }}>Revenu net foyer</div>
@@ -373,20 +383,22 @@ export default function BudgetProjection() {
 
             {/* Bilan */}
             <div style={{ background: "#f8fafc", borderRadius: 12, padding: "12px 14px", border: "1px solid #e2e8f0" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, paddingBottom: 10, borderBottom: "1px solid #e2e8f0" }}>
-                <div>
-                  <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 2 }}>Marge brute (sans aides)</div>
-                  <div style={{ fontWeight: 700, fontSize: 16, color: margeAuPic < 0 ? "#ef4444" : "#475569" }}>{margeAuPic.toLocaleString("fr-FR")} €</div>
+              {includeAides && (
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, paddingBottom: 10, borderBottom: "1px solid #e2e8f0" }}>
+                  <div>
+                    <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 2 }}>Marge brute (sans aides)</div>
+                    <div style={{ fontWeight: 700, fontSize: 16, color: margeAuPic < 0 ? "#ef4444" : "#475569" }}>{margeAuPic.toLocaleString("fr-FR")} €</div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 2 }}>Aides CAF estimées</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "#22c55e" }}>+{peakData.totalAides.toLocaleString("fr-FR")} €</div>
+                  </div>
                 </div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 2 }}>Aides CAF estimées</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#22c55e" }}>+{peakData.totalAides.toLocaleString("fr-FR")} €</div>
-                </div>
-              </div>
+              )}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px", borderRadius: 10, background: margeApresAides < 600 ? "#fef2f2" : margeApresAides < 1000 ? "#fffbeb" : "#f0fdf4", border: `1px solid ${margeApresAides < 600 ? "#fecaca" : margeApresAides < 1000 ? "#fde68a" : "#bbf7d0"}` }}>
                 <div>
                   <div style={{ fontSize: 12, fontWeight: 700, color: "#1e293b" }}>Reste à vivre</div>
-                  <div style={{ fontSize: 10, color: "#64748b", marginTop: 1 }}>après toutes charges + aides</div>
+                  <div style={{ fontSize: 10, color: "#64748b", marginTop: 1 }}>{includeAides ? "après toutes charges + aides" : "après toutes charges (hors aides)"}</div>
                 </div>
                 <div style={{ textAlign: "right" }}>
                   <div style={{ fontSize: 26, fontWeight: 800, color: margeApresAides < 600 ? "#ef4444" : margeApresAides < 1000 ? "#f59e0b" : "#22c55e" }}>{margeApresAides.toLocaleString("fr-FR")} €</div>

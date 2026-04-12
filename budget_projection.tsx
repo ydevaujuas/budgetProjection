@@ -142,11 +142,12 @@ export default function BudgetProjection() {
   const [achatAnnee, setAchatAnnee] = useState(2028);
   const [crechePrice, setCrechePrice] = useState(750);
   const [baseAlim, setBaseAlim] = useState(500);
-  const [voiture, setVoiture] = useState(400);
+  const [voiture, setVoiture] = useState(100);
   const [energie, setEnergie] = useState(147);
   const [telecom, setTelecom] = useState(34);
   const [loisirs, setLoisirs] = useState(200);
   const [assurance, setAssurance] = useState(89);
+  const [includeAides, setIncludeAides] = useState(true);
   const [activeTab, setActiveTab] = useState("famille");
 
   const child2Birth = CHILD1_BIRTH + gap2;
@@ -211,7 +212,7 @@ export default function BudgetProjection() {
   const peakVarTotal = peakData.garde + peakData.alim;
   const peakGrandTotal = peakVarTotal + fixedCharges + mensualite;
   const margeAuPic = revenuNet - peakGrandTotal;
-  const margeApresAides = margeAuPic + peakData.totalAides;
+  const margeApresAides = margeAuPic + (includeAides ? peakData.totalAides : 0);
   const tauxEndettement = Math.round((mensualite / revenuNet) * 100);
 
   const tabs = [
@@ -284,8 +285,19 @@ export default function BudgetProjection() {
 
           {/* Synthèse */}
           <div style={{ background: "#fff", borderRadius: 16, padding: "20px", boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#475569", marginBottom: 14 }}>
-              Synthèse budgétaire au pic · {peakData.year}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#475569" }}>
+                Synthèse budgétaire au pic · {peakData.year}
+              </div>
+              <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 12, color: "#475569", userSelect: "none" }}>
+                <input
+                  type="checkbox"
+                  checked={includeAides}
+                  onChange={e => setIncludeAides(e.target.checked)}
+                  style={{ width: 14, height: 14, accentColor: "#22c55e", cursor: "pointer" }}
+                />
+                Aides CAF
+              </label>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
               {[
@@ -298,7 +310,7 @@ export default function BudgetProjection() {
                 { label: "Téléphonie & internet", val: telecom, sign: "−", color: SECTION_COLORS.telecom },
                 { label: "Loisirs & vacances", val: loisirs, sign: "−", color: SECTION_COLORS.loisirs },
                 { label: "Assurances", val: assurance, sign: "−", color: SECTION_COLORS.assurance },
-                { label: "Aides CAF estimées", val: peakData.totalAides, sign: "+", color: "#22c55e" },
+                ...(includeAides ? [{ label: "Aides CAF estimées", val: peakData.totalAides, sign: "+", color: "#22c55e" }] : []),
               ].map((row, i) => (
                 <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 10px", borderRadius: 8, background: row.sign === "+" ? "#f0fdf4" : "#f8fafc" }}>
                   <span style={{ fontSize: 12, color: "#475569" }}>{row.label}</span>
