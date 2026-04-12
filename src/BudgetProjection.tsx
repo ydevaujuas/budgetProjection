@@ -134,7 +134,7 @@ export default function BudgetProjection() {
   const [nbChildren, setNbChildren] = useState(2);
   const [gap2, setGap2] = useState(3);
   const [gap3, setGap3] = useState(3);
-  const [revenuFoyer, setRevenuFoyer] = useState(5300);
+  const [revenuFoyer, setRevenuFoyer] = useState(5200);
   const [montantPret, setMontantPret] = useState(320000);
   const [dureePret, setDureePret] = useState(20);
   const [tauxPret, setTauxPret] = useState(3.5);
@@ -142,9 +142,9 @@ export default function BudgetProjection() {
   const [crechePrice, setCrechePrice] = useState(1200);
   const [baseAlim, setBaseAlim] = useState(500);
   const [voiture, setVoiture] = useState(400);
-  const [energie, setEnergie] = useState(180);
+  const [energie, setEnergie] = useState(181);
   const [loisirs, setLoisirs] = useState(200);
-  const [assurance, setAssurance] = useState(150);
+  const [assurance, setAssurance] = useState(65);
   const [activeTab, setActiveTab] = useState("famille");
 
   const child2Birth = CHILD1_BIRTH + gap2;
