@@ -439,10 +439,6 @@ export default function BudgetProjection() {
                 {/* Fixed charges group */}
                 <div style={{ marginBottom: 4, padding: "6px 10px 0", background: "#f8fafc", borderRadius: 10, border: "1px solid #e2e8f0" }}>
                   <div style={{ fontSize: 11, fontWeight: 700, color: "#1e293b", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Charges fixes</div>
-                  <SectionTitle icon="🚗" label="Transport" />
-                  <SliderControl label="Voiture(s) — leasing, carburant, entretien"
-                    value={voiture} setValue={setVoiture} min={0} max={1000} step={50} unit=" €" color={SECTION_COLORS.voiture}
-                  />
                   <SectionTitle icon="⚡" label="Logement & énergie" />
                   <SliderControl label="Énergie — EDF & gaz"
                     value={energie} setValue={setEnergie} min={50} max={400} step={5} unit=" €"
@@ -463,13 +459,17 @@ export default function BudgetProjection() {
                   />
                   <div style={{ margin: "8px -10px 0", padding: "10px 12px", background: "#dbeafe", borderRadius: "0 0 10px 10px", display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#1d4ed8" }}>
                     <span>Total charges fixes</span>
-                    <span>{(voiture + energie + telecom + assurance + crechePrice).toLocaleString("fr-FR")} €/mois</span>
+                    <span>{(energie + telecom + assurance + crechePrice).toLocaleString("fr-FR")} €/mois</span>
                   </div>
                 </div>
 
                 {/* Variable charges group */}
                 <div style={{ marginTop: 12, padding: "6px 10px 0", background: "#f8fafc", borderRadius: 10, border: "1px solid #e2e8f0" }}>
                   <div style={{ fontSize: 11, fontWeight: 700, color: "#1e293b", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Charges variables</div>
+                  <SectionTitle icon="🚗" label="Transport" />
+                  <SliderControl label="Voiture(s) — leasing, carburant, entretien"
+                    value={voiture} setValue={setVoiture} min={0} max={1000} step={50} unit=" €" color={SECTION_COLORS.voiture}
+                  />
                   <SectionTitle icon="🎯" label="Vie courante" />
                   <SliderControl label="Loisirs, sorties, vacances"
                     value={loisirs} setValue={setLoisirs} min={0} max={600} step={50} unit=" €" color={SECTION_COLORS.loisirs}
@@ -480,7 +480,7 @@ export default function BudgetProjection() {
                   />
                   <div style={{ margin: "8px -10px 0", padding: "10px 12px", background: "#ffedd5", borderRadius: "0 0 10px 10px", display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#c2410c" }}>
                     <span>Total charges variables</span>
-                    <span>{(loisirs + baseAlim).toLocaleString("fr-FR")} €/mois</span>
+                    <span>{(voiture + loisirs + baseAlim).toLocaleString("fr-FR")} €/mois</span>
                   </div>
                 </div>
               </>
